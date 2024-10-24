@@ -1,5 +1,7 @@
 const getAboutPage = (req, res) => {
-    res.render('about', { title: 'About Us' });
+    res.render('main', { title: 'About', data: { page: 'about' } });
 };
 
-export default { getAboutPage };
+export default {
+    getAboutPage
+};

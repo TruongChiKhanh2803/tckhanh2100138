@@ -1,10 +1,23 @@
 <h2>User Details</h2>
-<p>Username: <%= user.username %>
-</p>
-<p>Full name: <%= user.fullname %>
-</p>
-<p>Sex: <%= user.sex %>
-</p>
-<p>Address: <%= user.address %>
-</p>
-<a href="/users">Back to List</a>
+<div class="card">
+    <div class="card-body">
+        <% if (data.user) { %>
+            <p class="card-text"><strong>Username:</strong>
+                <%= data.user.username %>
+            </p>
+            <p class="card-text"><strong>Full name:</strong>
+                <%= data.user.fullname %>
+            </p>
+            <p class="card-text"><strong>Gender:</strong>
+                <%= data.user.sex %>
+            </p>
+            <p class="card-text"><strong>Address:</strong>
+                <%= data.user.address %>
+            </p>
+            <a class="btn btn-primary" href="/users">Back to List</a>
+            <% } else { %>
+                <p>Không tìm thấy thông tin người dùng!</p>
+                <a class="btn btn-primary" href="/users">Back to List</a>
+                <% } %>
+    </div>
+</div>

@@ -1,36 +1,73 @@
-<table>
-    <thead>
+<table class="table table-striped">
+    <thead class="table-dark">
         <tr>
-            <th>STT</th>
-            <th>Username</th>
-            <th>Full name</th>
-            <th>Address</th>
-            <th>Setting</th>
+            <th scope="col">STT</th>
+            <th scope="col">Username</th>
+            <th scope="col">Full Name</th>
+            <th scope="col">Gender</th>
+            <th scope="col">Email</th>
+            <th scope="col">Address</th>
+            <th scope="col">Role</th>
+            <th scope="col">Setting</th>
         </tr>
     </thead>
     <tbody>
-        <% users.forEach((user, index)=> { %>
-            <tr>
-                <td>
-                    <%= index + 1 %>
-                </td>
-                <td>
-                    <%= user.username %>
-                </td>
-                <td>
-                    <%= user.fullname %>
-                </td>
-                <td>
-                    <%= user.address %>
-                </td>
-                <td>
-                    <a href="/users/<%= user.id %>">👁</a>
-                    <a href="/users/<%= user.id %>/edit">✏️</a>
-                    <form action="/users/<%= user.id %>/delete" method="POST" style="display:inline;">
-                        <button type="submit">🗑️</button>
-                    </form>
-                </td>
-            </tr>
-            <% }) %>
+        <% if (data.rows && data.rows.length> 0) { %>
+            <% for (let i=0; i < data.rows.length; i++) { %>
+                <tr>
+                    <td>
+                        <%= i + 1 %>
+                    </td>
+                    <td>
+                        <%= data.rows[i].username %>
+                    </td>
+                    <td>
+                        <%= data.rows[i].fullname %>
+                    </td>
+                    <td>
+                        <%= data.rows[i].sex %>
+                    </td>
+                    <td>
+                        <%= data.rows[i].email %>
+                    </td>
+                    <td>
+                        <%= data.rows[i].address %>
+                    </td>
+                    <td>
+                        <%= data.rows[i].role %>
+                    </td>
+                    <td>
+                        <a href="/users/detail/<%= data.rows[i].id %>" class="btn btn-info btn-sm" title="Xem chi tiết">
+                            👁
+                        </a>
+                        <!-- <a href="/users/edit/<%= data.rows[i].id %>" class="btn btn-warning btn-sm" title="Chỉnh sửa">
+                            ✏️
+                        </a>
+                        <form action="/users/<%= data.rows[i].id %>/delete" method="POST" style="display:inline;"
+                            onsubmit="return confirm('Bạn có chắc chắn muốn xóa người dùng này không?');">
+                            <button type="submit" class="btn btn-danger btn-sm" title="Xóa">
+                                🗑️
+                            </button>
+                        </form> -->
+                        <% if (session.user && session.user.role==='admin' ) { %>
+                            <a href="/users/edit/<%= data.rows[i].id %>" class="btn btn-warning btn-sm"
+                                title="Chỉnh sửa">
+                                ✏️
+                            </a>
+                            <form action="/users/<%= data.rows[i].id %>/delete" method="POST" style="display:inline;"
+                                onsubmit="return confirm('Bạn có chắc chắn muốn xóa người dùng này không?');">
+                                <button type="submit" class="btn btn-danger btn-sm" title="Xóa">
+                                    🗑️
+                                </button>
+                            </form>
+                            <% } %>
+                    </td>
+                </tr>
+                <% } %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="5" class="text-center">Không tìm thấy người dùng!</td>
+                        </tr>
+                        <% } %>
     </tbody>
 </table>

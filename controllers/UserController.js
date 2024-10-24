@@ -1,87 +1,136 @@
-import pool from '../config/db';
-const createUserForm = (req, res) => {
-    res.render('user_create', { title: 'Add User' });
+import express from 'express';
+import pool from '../models/userModel';
+import userModel from '../models/userModel';
+
+const getUsers = async (req, res) => {
+    try {
+        const users = await userModel.getAllUser();
+        res.render('main', { title: 'Users', data: { page: 'user_list', rows: users } });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+    // try {
+    //     const users = await userModel.getAllUser();
+    //     res.json(users); // Send users as JSON response
+    // } catch (error) {
+    //     console.error(error);
+    //     res.status(500).json({ message: 'Internal Server Error' }); // Send JSON error response
+    // }
 };
-// Thêm người dùng mới
+
+const createUserForm = (req, res) => {
+    res.render('main', { title: 'Add User', data: { page: 'user_create' } });
+};
+
 const createUser = async (req, res) => {
     const { username, password, fullname, address, sex, email } = req.body;
     try {
-        await pool.query(
-            'INSERT INTO users (username, password, fullname, address, sex, email) VALUES (?, ?, ?, ?, ?, ?)',
-            [username, password, fullname, address, sex, email]
-        );
+        await userModel.addUser({ username, password, fullname, address, sex, email });
         res.redirect('/users');
     } catch (error) {
         console.error(error);
-        res.status(500).send('Error creating user');
+        res.status(500).send('Internal Server Error');
     }
 };
-// Hiển thị danh sách người dùng
-const getUsers = async (req, res) => {
-    try {
-        const [users] = await pool.query('SELECT * FROM users');
-        res.render('user_list', { title: 'Users', users }); // Pass title
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Error fetching users');
-    }
-};
-// Xem chi tiết người dùng
-export const getUserById = async (req, res) => {
+
+const getUserDetails = async (req, res) => {
     try {
         const userId = req.params.id;
-        const [rows] = await pool.query('SELECT * FROM users WHERE id = ?', [userId]);
+        const user = await userModel.getUserById(userId);
 
-        if (rows.length > 0) {
-            res.render('user_detail', { user: rows[0], title: 'User Detail' });
+        if (user) {
+            res.render('main', { title: 'User Details', data: { page: 'user_detail', user } });
         } else {
             res.status(404).send('User not found');
         }
     } catch (error) {
-        console.error('Error details:', error.message);
-        res.status(500).send('Error retrieving user');
+        console.error(error);
+        res.status(500).send('Internal Server Error');
     }
 };
-
-// Sửa thông tin người dùng
 const getEditUserForm = async (req, res) => {
-    const userId = req.params.id;
     try {
-        const [rows] = await pool.query('SELECT * FROM users WHERE id = ?', [userId]);
+        const userId = req.params.id;
+        const user = await userModel.getUserById(userId);
 
-        if (rows.length > 0) {
-            res.render('user_edit', { user: rows[0], title: 'Edit User' }); // Truyền dữ liệu user vào view
+        if (user) {
+            res.render('main', { title: 'Edit User', data: { page: 'user_edit', user } });
         } else {
             res.status(404).send('User not found');
         }
     } catch (error) {
-        console.error('Error retrieving user for edit:', error.message);
-        res.status(500).send('Error retrieving user for edit');
+        console.error(error);
+        res.status(500).send('Internal Server Error');
     }
 };
-const editUser = async (req, res) => {
-    const { username, fullname, address } = req.body;
+
+
+const updateUser = async (req, res) => {
     const userId = req.params.id;
+    const { username, fullname, address } = req.body;
+
     try {
-        await pool.query('UPDATE users SET username = ?, fullname = ?, address = ? WHERE id = ?', [username, fullname, address, userId]);
+        await userModel.updateUser(userId, { username, fullname, address });
+
+        if (req.session.user && req.session.user.id == userId) {
+            req.session.user.username = username;
+            req.session.user.fullname = fullname;
+        }
+
         res.redirect('/users');
     } catch (error) {
-        console.error('Error updating user:', error);
-        res.status(500).send('Error updating user');
+        console.error(error);
+        res.status(500).send('Internal Server Error');
     }
 };
 
 
-// Xóa người dùng
 const deleteUser = async (req, res) => {
     const userId = req.params.id;
     try {
-        await pool.query('DELETE FROM users WHERE id = ?', [userId]);
+        await userModel.deleteUser(userId);
         res.redirect('/users');
     } catch (error) {
         console.error(error);
-        res.status(500).send('Error deleting user');
+        res.status(500).send('Internal Server Error');
     }
 };
 
-export default { getUsers, getUserById, editUser, deleteUser, createUser, getEditUserForm, createUserForm };
+const getUserByUsername = async (username) => {
+    const sql = 'SELECT * FROM users WHERE username = ?';
+    const [rows] = await pool.execute(sql, [username]);
+    return rows[0];
+};
+
+const RegisterUser = async ({ username, password, fullname, address, sex, email }) => {
+    const sql = `
+        INSERT INTO users (username, password, fullname, address, sex, email)
+        VALUES (?, ?, ?, ?, ?, ?)
+    `;
+    const values = [username, password, fullname, address, sex, email];
+    await pool.execute(sql, values);
+};
+
+const deleteOwnAccount = async (req, res) => {
+    const userId = req.session.user.id;
+    try {
+        await userModel.deleteUser(userId); 
+        req.session.destroy();
+        res.redirect('/'); 
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
+export default {
+    getUsers,
+    createUserForm,
+    createUser,
+    getUserDetails,
+    getEditUserForm,
+    updateUser,
+    deleteUser,
+    deleteOwnAccount,
+};

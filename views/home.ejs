@@ -1,1 +1,106 @@
-<h1>Home</h1>
+<h1>Source</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Session</th>
+            <th scope="col">Topic</th>
+            <th scope="col">Material Link</th>
+            <th scope="col">Date Posted</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th scope="row">1</th>
+            <td>NodeJS Express Buổi 1</td>
+            <td><a href="https://example.com/material1" target="_blank" class="link-primary">Download PDF</a></td>
+            <td>2024-09-20</td>
+            <!-- <td><a href="details1.html" class="btn btn-info btn-sm" role="button">Xem chi tiết</a>
+            </td> -->
+            <td>
+                <a href="#" class="btn btn-info btn-sm" title="Xem chi tiết">
+                    👁
+                </a>
+                <% if (session.user && session.user.role==='admin' ) { %>
+                    <a href="#" class="btn btn-warning btn-sm" title="Chỉnh sửa">
+                        ✏️
+                    </a>
+                    <form action="#" method="POST" style="display:inline;"
+                        onsubmit="return confirm('Bạn có chắc chắn muốn xóa người dùng này không?');">
+                        <button type="submit" class="btn btn-danger btn-sm" title="Xóa">
+                            🗑️
+                        </button>
+                    </form>
+                    <% } %>
+            </td>
+
+        </tr>
+        <tr>
+            <th scope="row">2</th>
+            <td>React Buổi 1</td>
+            <td><a href="https://example.com/material2" target="_blank" class="link-primary">Download PDF</a></td>
+            <td>2024-09-20</td>
+            <td>
+                <a href="#" class="btn btn-info btn-sm" title="Xem chi tiết">
+                    👁
+                </a>
+                <% if (session.user && session.user.role==='admin' ) { %>
+                    <a href="#" class="btn btn-warning btn-sm" title="Chỉnh sửa">
+                        ✏️
+                    </a>
+                    <form action="#" method="POST" style="display:inline;"
+                        onsubmit="return confirm('Bạn có chắc chắn muốn xóa người dùng này không?');">
+                        <button type="submit" class="btn btn-danger btn-sm" title="Xóa">
+                            🗑️
+                        </button>
+                    </form>
+                    <% } %>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">3</th>
+            <td>NodeJS Express Buổi 2</td>
+            <td><a href="https://example.com/material3" target="_blank" class="link-primary">Download PDF</a></td>
+            <td>2024-09-20</td>
+            <td>
+                <a href="#" class="btn btn-info btn-sm" title="Xem chi tiết">
+                    👁
+                </a>
+                <% if (session.user && session.user.role==='admin' ) { %>
+                    <a href="#" class="btn btn-warning btn-sm" title="Chỉnh sửa">
+                        ✏️
+                    </a>
+                    <form action="#" method="POST" style="display:inline;"
+                        onsubmit="return confirm('Bạn có chắc chắn muốn xóa người dùng này không?');">
+                        <button type="submit" class="btn btn-danger btn-sm" title="Xóa">
+                            🗑️
+                        </button>
+                    </form>
+                    <% } %>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">4</th>
+            <td>Building a RESTful API</td>
+            <td><a href="https://example.com/material4" target="_blank" class="link-primary">Download PDF</a></td>
+            <td>2024-09-20</td>
+            <td>
+                <a href="#" class="btn btn-info btn-sm" title="Xem chi tiết">
+                    👁
+                </a>
+                <% if (session.user && session.user.role==='admin' ) { %>
+                    <a href="#" class="btn btn-warning btn-sm" title="Chỉnh sửa">
+                        ✏️
+                    </a>
+                    <form action="#" method="POST" style="display:inline;"
+                        onsubmit="return confirm('Bạn có chắc chắn muốn xóa người dùng này không?');">
+                        <button type="submit" class="btn btn-danger btn-sm" title="Xóa">
+                            🗑️
+                        </button>
+                    </form>
+                    <% } %>
+            </td>
+        </tr>
+    </tbody>
+</table>

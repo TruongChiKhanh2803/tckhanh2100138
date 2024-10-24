@@ -1,5 +1,7 @@
 const getContactPage = (req, res) => {
-    res.render('contact', { title: 'Contact Us' });
+    res.render('main', { title: 'Contact', data: { page: 'contact' } });
 };
 
-export default { getContactPage };
+export default {
+    getContactPage
+};

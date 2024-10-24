@@ -1,7 +1,7 @@
 const getHomePage = (req, res) => {
-    res.render('home', { title: 'Home' });
+    res.render('main', { title: 'Home', data: { page: 'home' } });
 };
 
-export default { getHomePage };
-
-
+export default {
+    getHomePage
+};

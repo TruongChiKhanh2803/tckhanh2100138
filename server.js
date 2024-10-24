@@ -1,75 +1,131 @@
-// import express from 'express';
-// import dotenv from 'dotenv/config';
-// import getURL from './getURL';
-// import { default as date } from './date';
-// import viewEngine from './viewEngine';
-// import route from './routes/route';
-
-// const app = express();
-// const port = process.env.PORT || 6868;
-
-// viewEngine(app);
-
-// app.use('/', route);
-
-// app.get('/', (req, res) => {
-//     res.send('Hello Home');
-// });
-
-// app.get('/about', (req, res) => {
-//     res.send('Hello World! Page about');
-// });
-
-// app.get('/date', (req, res) => {
-//     res.send(`${date()}<br/>`);
-// });
-
-// app.get('*', (req, res) => {
-//     const path = req.path;
-//     res.send(`URL: ${path}`);
-// });
-
-// app.get('/ejs', (req, res) => {
-//     res.render('test');
-// });
-// app.get('/', (req, res) => {
-//     res.render('home');
-// });
-// app.get('/about', (req, res) => {
-//     res.render('about');
-// });
-
-// app.listen(port, () => {
-//     console.log(`Web run: ${port}`);
-// });
-
-
 import express from 'express';
-import expressLayouts from 'express-ejs-layouts';
 import dotenv from 'dotenv/config';
-import getURL from './getURL';
-import { default as date } from './date';
+import bcrypt from 'bcrypt';
+import path from 'path';
 import viewEngine from './viewEngine';
 import route from './routes/route';
-import db from './config/db';
-import methodOverride from 'method-override';
+import pool from './config/db';
+import RedisStore from "connect-redis";
+import session from 'express-session';
+import { createClient } from "redis";
 
 const app = express();
 const port = process.env.PORT || 6868;
 
-app.use(expressLayouts); // Use express-ejs-layouts
-app.set('view engine', 'ejs'); // Set EJS as the view engine
-app.set('layout', 'main'); // Use 'main.ejs' as the default layout
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'mySecret',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }
+}));
+
+
+app.use((req, res, next) => {
+    res.locals.session = req.session;
+    next();
+});
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(methodOverride('_method'));
+app.use(express.static(path.join(__dirname, 'public')));
+
 viewEngine(app);
-
-
 
 app.use('/', route);
 
-app.listen(port, () => {
-    console.log(`Web run: ${port}`);
+pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("Connected to MySQL database!");
+    connection.release();
 });
+
+app.listen(port, () => {
+    console.log(`Server is running at http://localhost:${port}/`);
+});
+
+
+// import express from 'express';
+// import dotenv from 'dotenv/config';
+// import bcrypt from 'bcrypt';
+// import path from 'path';
+// import viewEngine from './viewEngine';
+// import route from './routes/route';
+// import pool from './config/db';
+// import RedisStore from "connect-redis";
+// import session from 'express-session';
+// import { createClient } from "redis";
+
+// dotenv.config();
+
+// const app = express();
+// const port = process.env.PORT || 6868;
+
+// // Redis client configuration (nếu bạn cần Redis để lưu session)
+// const redisClient = createClient({
+//     url: process.env.REDIS_URL || 'redis://localhost:6379'
+// });
+// redisClient.connect().catch(console.error);
+
+// const redisStore = new RedisStore({
+//     client: redisClient,
+//     prefix: 'session:',
+//     ttl: 86400 // thời gian sống của session là 1 ngày
+// });
+
+// // Cấu hình session với Redis
+// app.use(session({
+//     store: redisStore,  // sử dụng Redis Store
+//     secret: process.env.SESSION_SECRET || 'mySecret',
+//     resave: false,
+//     saveUninitialized: true,
+//     cookie: {
+//         secure: false,   // true nếu bạn sử dụng HTTPS, hiện tại để false
+//         maxAge: 86400000 // thời gian sống của session cookie là 1 ngày
+//     }
+// }));
+
+// // Đảm bảo session được truyền vào mọi render trong EJS
+// app.use((req, res, next) => {
+//     res.locals.session = req.session;
+//     next();
+// });
+
+// // Middleware để kiểm tra quyền hạn
+// const checkRole = (roles) => (req, res, next) => {
+//     if (!req.session.user || !roles.includes(req.session.user.role)) {
+//         return res.status(403).send('Bạn không có quyền truy cập!');
+//     }
+//     next();
+// };
+
+// app.use(express.urlencoded({ extended: true }));
+// app.use(express.json());
+// app.use(express.static(path.join(__dirname, 'public')));
+
+// // Sử dụng view engine
+// viewEngine(app);
+
+// // Các route
+// app.use('/', route);
+
+// // Kết nối database
+// pool.getConnection((err, connection) => {
+//     if (err) throw err;
+//     console.log("Connected to MySQL database!");
+//     connection.release();
+// });
+
+// // Kiểm tra nếu người dùng chưa đăng nhập
+// const checkAuthenticated = (req, res, next) => {
+//     if (!req.session.user) {
+//         return res.redirect('/login');
+//     }
+//     next();
+// };
+
+// // Chạy server
+// app.listen(port, () => {
+//     console.log(`Server is running at http://localhost:${port}/`);
+// });
+
+
