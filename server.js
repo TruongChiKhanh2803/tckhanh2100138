@@ -8,10 +8,12 @@ import pool from './config/db';
 import RedisStore from "connect-redis";
 import session from 'express-session';
 import { createClient } from "redis";
+import cors from 'cors';
 
 const app = express();
-const port = process.env.PORT || 6868;
 
+const port = process.env.PORT || 6868;
+app.use(cors());
 app.use(session({
     secret: process.env.SESSION_SECRET || 'mySecret',
     resave: false,
@@ -38,6 +40,7 @@ pool.getConnection((err, connection) => {
     console.log("Connected to MySQL database!");
     connection.release();
 });
+
 
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}/`);

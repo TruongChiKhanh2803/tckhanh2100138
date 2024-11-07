@@ -1,0 +1,52 @@
+<!-- views/Product/product-detail.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= product.name %> - Chi Tiết SP
+    </title>
+</head>
+
+<body>
+    <h1>CHI TIẾT SẢN PHẨM: <%= product.ten %>
+    </h1>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <td>
+                <%= product.masp %>
+            </td> <!-- Assuming 'masp' is the product ID -->
+        </tr>
+        <tr>
+            <th>Tên</th>
+            <td>
+                <%= product.ten %>
+            </td> <!-- Assuming 'name' is the product name -->
+        </tr>
+        <tr>
+            <th>Mô Tả</th>
+            <td>
+                <%= product.mota %>
+            </td> <!-- Assuming 'description' is a valid column -->
+        </tr>
+        <tr>
+            <th>Hình Ảnh</th>
+            <td>
+                <%= product.hinhanh %>
+            </td> <!-- Assuming 'description' is a valid column -->
+        </tr>
+        <tr>
+            <th>Giá</th>
+            <td>
+                <%= product.gia %>
+            </td> <!-- Assuming 'price' is a valid column -->
+        </tr>
+    </table>
+
+    <a href="/products">Back to Product List</a>
+</body>
+
+</html>
